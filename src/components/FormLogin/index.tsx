@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "./styles";
 import { Button } from "../Button";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useAuth } from "../../hooks/useAuth";
 
 type InputTypes = {
   email: string;
@@ -18,10 +19,12 @@ export function FormLogin() {
     reset,
   } = useForm<InputTypes>();
 
+const { signIn,isLoading } =  useAuth()
 
-  const onSubmit: SubmitHandler<InputTypes> = (data) => {
-    console.log(data);
-    reset();
+
+  const onSubmit: SubmitHandler<InputTypes> = async ({email, password}) => {
+    const isLogged = await signIn ({email, password})
+    if (isLogged) reset();
     
   }
   return (
@@ -51,7 +54,7 @@ export function FormLogin() {
           <span className="inputError" >{errors.password?.message}</span>
         </section>
 
-        <Button title="Login" loading={false} />
+        <Button title="Login" loading={isLoading} />
       </form>
 
       <span className="messageChangePage">Não tem uma conta? </span>
