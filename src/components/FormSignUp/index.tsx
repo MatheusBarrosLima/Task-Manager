@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Container } from "./styles";
 import { Button } from "../Button";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useAuth } from "../../hooks/useAuth";
 
 type InputTypes = {
   name: string
@@ -10,21 +11,23 @@ type InputTypes = {
 };
 
 export function FormSignUp() {
-  const navigate = useNavigate();
-
-  const {
+    const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<InputTypes>();
 
-
-  const onSubmit: SubmitHandler<InputTypes> = (data) => {
-    console.log(data);
-    reset();
+  const {signUp} = useAuth()
+  const navigate = useNavigate()
+  const onSubmit: SubmitHandler<InputTypes> = async (data) => {
+    const userCreated= await signUp(data);
+    if (userCreated) {
+      navigate("/");
+      reset();
+    }
     
-  }
+  };
   return (
     <Container>
       <h2>Crie sua conta</h2>
