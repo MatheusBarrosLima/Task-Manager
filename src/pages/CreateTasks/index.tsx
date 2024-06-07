@@ -3,7 +3,7 @@ import { Container } from "./styles";
 export function CreateTasks() {
   return (
     <Container>
-      <h1>CreateTasks</h1>
+      <h1>Create Tasks</h1>
     </Container>
   );
 }

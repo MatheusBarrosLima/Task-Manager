@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { Container } from "./styles";
 import { MenuItem } from "../MenuItem";
+import { Container } from "./styles";
 import { useAuth } from "../../hooks/useAuth";
 
 type SideBarTypes = {
@@ -8,17 +8,17 @@ type SideBarTypes = {
 };
 
 export function SideBar({ toggleSideBar }: SideBarTypes) {
-
   const { signOut } = useAuth();
   const navigate = useNavigate();
 
-function logoutApp() {
-    const resp = confirm("Deseja sair da aplicação?")
-    
-    if(resp) {
-        signOut();
+  function logoutApp() {
+    const resp = confirm("Deseja sair da aplicação?");
+
+    if (resp) {
+      signOut();
+      navigate("/");
     }
-}
+  }
 
   return (
     <Container onClick={toggleSideBar}>
@@ -29,7 +29,7 @@ function logoutApp() {
 
         <nav>
           <ul>
-            <NavLink to={"/"}>
+            <NavLink to={"/"} onClick={toggleSideBar}>
               <MenuItem title="Home" icon="home" />
             </NavLink>
 

@@ -7,9 +7,9 @@ type SignInTypes = {
 };
 
 type SignUpTypes = {
+  name: string;
   password: string;
   email: string;
-  name: string
 };
 
 type AuthContextTypes = {
@@ -17,19 +17,18 @@ type AuthContextTypes = {
   signUp: (params: SignUpTypes) => Promise<boolean | void>;
   isLoading: boolean;
   userAuthID: string;
-  signOut: () => void
+  signOut: () => void;
 };
 
-export const AuthContext = createContext<AuthContextTypes>(
-  {} as AuthContextTypes
-);
+export const AuthContext = createContext<AuthContextTypes>({} as AuthContextTypes);
 
 export function AuthProvider({ children }: PropsWithChildren) {
   const [isLoading, setIsLoading] = useState(false);
   const [userAuthID, setUserAuthID] = useState("");
 
   async function signIn({ email, password }: SignInTypes) {
-    if (!email || !password) throw alert("Por favor informar email e senha");
+    if (!email || !password) throw alert("Por favor informar email e senha!");
+
     setIsLoading(true);
 
     return API.post("/login", {
@@ -41,7 +40,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
         setUserAuthID(res.data.id);
 
-        localStorage.setItem("@task_manager:user", JSON.stringify(res.data.id));
+        localStorage.setItem("@task_manager:userID", JSON.stringify(res.data.id));
 
         return true;
       })
@@ -51,6 +50,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         } else {
           alert("Erro ao fazer login!");
         }
+
         console.error(error);
       })
       .finally(() => {
@@ -58,8 +58,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
       });
   }
 
-  async function signUp({name, email, password }: SignUpTypes) {
-    if (!name || !email || !password) throw alert("Por favor informar nome, email e senha");
+  async function signUp({ name, email, password }: SignUpTypes) {
+    if (!name || !email || !password)
+      throw alert("Por favor informar nome, email e senha!");
+
     setIsLoading(true);
 
     return API.post("/user", {
@@ -77,6 +79,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         } else {
           alert("Erro ao criar usuário!");
         }
+
         console.error(error);
       })
       .finally(() => {
@@ -90,27 +93,24 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     API.post("/logout").catch((error) => {
       console.error(error);
-      
-    })
-
+    });
   }
 
   useEffect(() => {
     const userID = localStorage.getItem("@task_manager:userID");
 
-    if (userID){
-      const id = JSON.parse(userID)
+    if (userID) {
+      const id = JSON.parse(userID);
 
-      API.get("/user").then((res)=> {
-        if(id == res.data.id)setUserAuthID(id);
-      })
-      .catch((error) => {
-        console.error(error);
-        if(error.response?.status == 401) signOut
-        
-      })
-      
-    } 
+      API.get("/user")
+        .then((res) => {
+          if (id == res.data.id) setUserAuthID(id);
+        })
+        .catch((error) => {
+          console.error(error);
+          if (error.response?.status == 401) signOut();
+        });
+    }
   }, []);
 
   return (

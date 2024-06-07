@@ -5,11 +5,11 @@ import { StatsCard } from "../../components/StatsCard";
 
 export function Home() {
   const { data } = useQueryUser();
-  console.log(data);
 
   return (
     <Container>
       <h2>Tarefas</h2>
+
       <div className="statsContainer">
         <NavLink to={"/tasks"}>
           <StatsCard
@@ -20,15 +20,17 @@ export function Home() {
             total={data?.tasksInfo.total}
           />
         </NavLink>
+
         <NavLink to={"/tasks"}>
           <StatsCard
-            title="Pending"
-            icon="pending_action"
+            title="Pendentes"
+            icon="pending_actions"
             variant="pending"
             number={data?.tasksInfo.pending}
             total={data?.tasksInfo.total}
           />
         </NavLink>
+
         <NavLink to={"/tasks"}>
           <StatsCard
             title="Atrasadas"
@@ -38,11 +40,11 @@ export function Home() {
             total={data?.tasksInfo.total}
           />
         </NavLink>
+
         <NavLink to={"/tasks"}>
           <StatsCard
             title="Total"
             icon="query_stats"
-            variant="neutral"
             number={data?.tasksInfo.total}
             total={data?.tasksInfo.total}
           />

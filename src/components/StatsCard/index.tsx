@@ -19,17 +19,14 @@ export function StatsCard({
 }: StatsCardTypes) {
   const percentage = number && total ? (number / total) * 100 : null;
   return (
-    <>
-      <Container onClick={onClick} variant={variant}>
-        <div>
-          <h3>
-            {title} (
-            {number && total && `${percentage && percentage.toFixed(2)}`}) %
-          </h3>
-          <p>{number || "-"}</p>
-        </div>
-        <i className="material-icons">{icon}</i>
-      </Container>
-    </>
+    <Container onClick={onClick} variant={variant}>
+      <div>
+        <h3>
+          {title} ({number && total && `${percentage && percentage.toFixed(2)}`})%
+        </h3>
+        <p>{number || "-"}</p>
+      </div>
+      <i className="material-icons">{icon}</i>
+    </Container>
   );
 }
