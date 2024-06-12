@@ -1,43 +1,33 @@
 import { useState } from "react";
 import { ModalTaskDetails } from "../../components/ModalTaskDetails";
 import { Pagination } from "../../components/Pagination";
-import { TaskCard, TaskDataTypes } from "../../components/TaskCard";
-import { useQueryTask } from "../../hooks/useQueryTask";
-import { Container } from "./styles";
+import { TaskCard } from "../../components/TaskCard";
+import { useQueryTasks } from "../../hooks/useQueryTasks";
+import { Container } from "./style";
+import { TaskDataTypes } from "../../@types/tasks";
+import { useTask } from "../../hooks/useTask";
 
 export function Tasks() {
-  const [showModal, setShowModal] = useState(false);
-  const [taskDetails, setTaskDetails] = useState<TaskDataTypes>(
-    {} as TaskDataTypes
-  );
+  const [showModalTaskDetails, setShowModalTaskDetails] = useState(false);
+  const { setTaskData } = useTask();
+
+  const { data, isLoading, error, changeLimit, page, totalPages, prevPage, nextPage } =
+    useQueryTasks();
 
   function toggleModal() {
-    setShowModal((prevValue) => (prevValue == true ? false : true));
+    setShowModalTaskDetails((prevState) => (prevState == true ? false : true));
   }
 
-  function addTaskDetails(task: TaskDataTypes) {
-    setTaskDetails(task);
+  function addTaskToggleModal(task: TaskDataTypes) {
     toggleModal();
-  }
-
-  const {
-    data,
-    changeLimit,
-    page,
-    changePage,
-    totalPages,
-    prevPage,
-    nextPage,
-  } = useQueryTask();
-
-  if (totalPages > 0 && page > totalPages) {
-    changePage(totalPages);
+    setTaskData(task);
   }
 
   return (
     <Container>
       <div className="headPageTasks">
         <h2>Lista</h2>
+
         <div className="paginationDesktop">
           <Pagination
             page={page}
@@ -49,15 +39,26 @@ export function Tasks() {
           />
         </div>
       </div>
-      <div className="tasksContainer">
+
+      {isLoading && <span className="loading">Carregando...</span>}
+      {!isLoading && error && <span className="queryError">Erro!</span>}
+
+      <div className="tasksContainer scrollBar">
         {data?.length == 0 ? (
-          <p className="loading">Sem terefas para mostrar</p>
+          <p className="loading">Sem tarefas para mostrar</p>
         ) : (
           data?.map((task) => {
-            return (<TaskCard data={task} key={task.id} onClick={() => addTaskDetails(task)}/>);
+            return (
+              <TaskCard
+                data={task}
+                key={task.id}
+                onClick={() => addTaskToggleModal(task)}
+              />
+            );
           })
         )}
       </div>
+
       <div className="paginationMobile">
         <Pagination
           page={page}
@@ -68,7 +69,8 @@ export function Tasks() {
           changeLimit={changeLimit}
         />
       </div>
-      {showModal && <ModalTaskDetails toggleModal={toggleModal} task={taskDetails}/>}
+
+      {showModalTaskDetails && <ModalTaskDetails toggleModal={toggleModal} />}
     </Container>
   );
 }

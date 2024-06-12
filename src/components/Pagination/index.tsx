@@ -1,8 +1,7 @@
 import { ChangeEvent } from "react";
-import { Container } from "./styles";
+import { Container } from "./style";
 
-
-type PaginationTypes = {
+type PaginationProps = {
   page: number;
   step?: number;
   totalPages: number;
@@ -18,7 +17,7 @@ export function Pagination({
   prevPage,
   nextPage,
   changeLimit,
-}: PaginationTypes) {
+}: PaginationProps) {
   function handleChangeLimit(event: ChangeEvent<HTMLSelectElement>) {
     changeLimit(Number(event.target.value));
   }
